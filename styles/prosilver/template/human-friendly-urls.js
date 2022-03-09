@@ -47,7 +47,7 @@
 
 	const slugCacheGet = ({ path, param, id }) =>
 		slugCache.get(path)?.get(param)?.get(id)
-	const slugCacheSet = ({ path, param, id, slug }) =>
+	const slugCacheSet = ({ path, param, id }, slug) =>
 		slugCache.get(path)?.get(param)?.set(id, slug)
 
 	const generateHrefFromSlugCache = ({ href, path, param, id }) => {
@@ -137,7 +137,7 @@
 
 		mutateUrl(url, { param, id, slug })
 
-		slugCacheSet({ path, param, id, slug })
+		slugCacheSet({ path, param, id }, slug)
 
 		return url.href
 	}
@@ -169,10 +169,7 @@
 	const sluggableUrlData = getSluggableUrlData(window.location.href)
 
 	if (sluggableUrlData) {
-		const href = addSlug(
-			window.location.href,
-			getCurrentPageTitle(),
-		)
+		const href = addSlug(window.location.href, getCurrentPageTitle())
 
 		window.history.replaceState({}, document.title, href)
 	}
