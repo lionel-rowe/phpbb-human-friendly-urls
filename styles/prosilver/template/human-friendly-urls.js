@@ -1,4 +1,5 @@
 ;(() => {
+	/** @param {string} str */
 	const slugify = (str) =>
 		str
 			// split apart diacritics to discard later - removes need for URL encoding where possible
@@ -14,6 +15,10 @@
 			.trim()
 			.replace(/ +/gu, '-')
 
+	/**
+	 * @param {URL} url
+	 * @param {{ param: string, id: string, slug: string }}
+	 */
 	const mutateUrl = (url, { param, id, slug }) => {
 		const integerPart = id.match(/^\d+/)
 
@@ -36,8 +41,12 @@
 		}),
 	)
 
-	// cache both slightly improves perf and allows links with no text content to
-	// intelligently grab slug from contentful links on same page
+	/**
+	 * @type {Map<string, Map<string, Map<string, string>>>}
+	 *
+	 * cache both slightly improves perf and allows links with no text content to
+	 * intelligently grab slug from contentful links on same page
+	 */
 	const slugCache = new Map(
 		[...pathParams.entries()].map(([param, ids]) => [
 			param,
@@ -45,11 +54,18 @@
 		]),
 	)
 
+	/** @param {{ path: string, param: string, id: string }} */
 	const slugCacheGet = ({ path, param, id }) =>
 		slugCache.get(path)?.get(param)?.get(id)
+
+	/**
+	 * @param {{ path: string, param: string, id: string }}
+	 * @param {string} slug
+	 */
 	const slugCacheSet = ({ path, param, id }, slug) =>
 		slugCache.get(path)?.get(param)?.set(id, slug)
 
+	/** @param {{ href: string, path: string, param: string, id: string }} */
 	const generateHrefFromSlugCache = ({ href, path, param, id }) => {
 		const url = new URL(href)
 
@@ -64,8 +80,10 @@
 		return null
 	}
 
+	/** @param {string} id */
 	const hasSlug = (id) => /\D/.test(id)
 
+	/** @param {string} href */
 	const getSluggableUrlData = (href) => {
 		const url = new URL(href)
 		const path = url.pathname.split('/').slice(-1)[0].split('.')[0]
@@ -87,9 +105,10 @@
 			}
 		}
 
-		return hasSlug(id) ? null : { path, param, id }
+		return id && !hasSlug(id) ? { path, param, id } : null
 	}
 
+	/** @param {HTMLAnchorElement} link */
 	const getLinkTitle = (link) => {
 		// if .notification-block, grab .notification-reference
 		// (.notification-block also contains other text)
@@ -109,6 +128,10 @@
 	const getCurrentPageTitle = () =>
 		document.querySelector('h2[class$="-title"]')?.textContent?.trim()
 
+	/**
+	 * @param {string} href
+	 * @param {string} title
+	 */
 	const addSlug = (href, title) => {
 		const url = new URL(href)
 
@@ -150,6 +173,7 @@
 		return url.href
 	}
 
+	/** @param {HTMLAnchorElement} link */
 	const renderSlugForLink = (link) => {
 		const href = addSlug(link.href, getLinkTitle(link))
 
