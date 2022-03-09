@@ -71,7 +71,9 @@
 		const path = url.pathname.split('/').slice(-1)[0].split('.')[0]
 		const params = pathParams.get(path)
 
-		if (!params) return null
+		if (!params) {
+			return null
+		}
 
 		let param
 		let id
@@ -80,7 +82,9 @@
 			param = p
 			id = url.searchParams.get(p)
 
-			if (id) break
+			if (id) {
+				break
+			}
 		}
 
 		return hasSlug(id) ? null : { path, param, id }
@@ -110,7 +114,9 @@
 
 		const { path, param, id } = getSluggableUrlData(href) ?? {}
 
-		if (!id) return
+		if (!id) {
+			return
+		}
 
 		const cached = generateHrefFromSlugCache({ href, path, param, id })
 
@@ -131,7 +137,9 @@
 		}
 
 		// if text content already contains query param, is most likely just the URL itself
-		if (maybeId) return
+		if (maybeId) {
+			return
+		}
 
 		const slug = slugify(title)
 
