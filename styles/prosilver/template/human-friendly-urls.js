@@ -209,9 +209,12 @@
 	document.querySelectorAll(selector).forEach(renderSlugForLink)
 
 	// for any elements added later with JavaScript
-	document.body.addEventListener('mouseover', (e) => {
-		if (e.target.matches(selector)) {
-			renderSlugForLink(e.target)
-		}
-	})
+	new MutationObserver((mutations) => {
+		mutations
+			.map((mutation) => mutation.target)
+			.filter((node) => node instanceof HTMLElement)
+			.flatMap((el) => [el, ...el.querySelectorAll(selector)])
+			.filter((el) => el.matches(selector))
+			.forEach(renderSlugForLink)
+	}).observe(document.body, { childList: true, subtree: true })
 })()
