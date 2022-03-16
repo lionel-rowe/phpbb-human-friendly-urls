@@ -2,8 +2,7 @@
 	/** @param {string} str */
 	const slugify = (str) =>
 		str
-			// split apart diacritics to discard later - removes need for URL encoding where possible
-			.normalize('NFKD')
+			.normalize()
 			.toLowerCase()
 			// split on punctuation or separators (including spaces)
 			.split(/[\p{P}\p{Z}]+/gu)

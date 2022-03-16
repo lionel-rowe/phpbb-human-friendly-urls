@@ -1,0 +1,7 @@
+services:
+    luoning.humanfriendlyurls.listener:
+        class: luoning\humanfriendlyurls\event\main_listener
+        arguments:
+            - '@language'
+        tags:
+            - { name: event.listener }
