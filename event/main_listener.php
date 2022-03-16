@@ -22,9 +22,9 @@ class main_listener implements EventSubscriberInterface
 {
 	static public function getSubscribedEvents()
 	{
-		return array(
+		return [
 			'core.text_formatter_s9e_render_after' 		=> 'unicodify_urls',
-		);
+		];
 	}
 
 	/* @var \phpbb\language\language */
@@ -70,14 +70,14 @@ class main_listener implements EventSubscriberInterface
 		$fragment = urldecode($url['fragment']);
 		$query = urldecode($url['query']);
 
-		return implode(array(
+		return implode([
 			$scheme ? "$scheme://" : '',
 			$host,
 			$port ? ":$port" : '',
 			$path,
 			$query ? "?$query" : '',
 			$fragment ? "#$fragment" : '',
-		));
+		]);
 	}
 
 	/**

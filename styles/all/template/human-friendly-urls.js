@@ -184,12 +184,16 @@
 				const { path, param, id } = getSluggableUrlData(link.href) ?? {}
 
 				if (id) {
-					link.href = generateHrefFromSlugCache({
+					const href = generateHrefFromSlugCache({
 						href: link.href,
 						path,
 						param,
 						id,
 					})
+
+					if (href) {
+						link.href = href
+					}
 				}
 			}, 0)
 		}
