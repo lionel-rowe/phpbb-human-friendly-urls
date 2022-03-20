@@ -110,8 +110,14 @@
 		const textContent = $cloned.textContent.trim()
 		const title = $cloned.title?.trim()
 
+		const text = title?.startsWith(textContent.slice(0, -1)) ? title : textContent
+
+		// hard-coded — phpBB never localizes this string;
+		// see e.g. /viewtopic.php line 2369
+		const re = 'Re: '
+
 		// use title if textContent is truncated with "…" and title contains full version
-		return title?.startsWith(textContent.slice(0, -1)) ? title : textContent
+		return text.startsWith(re) ? text.slice(re.length) : text
 	}
 
 	const getCurrentPageTitle = () => {
