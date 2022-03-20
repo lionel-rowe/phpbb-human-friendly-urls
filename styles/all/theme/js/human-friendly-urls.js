@@ -102,8 +102,13 @@
 				?.textContent.trim()
 		}
 
-		const textContent = link.textContent.trim()
-		const title = link.title?.trim()
+		const $cloned = link.cloneNode(true)
+
+		// visually hidden elements not canonical for link title generation
+		$cloned.querySelectorAll('.sr-only').forEach(($el) => $el.remove())
+
+		const textContent = $cloned.textContent.trim()
+		const title = $cloned.title?.trim()
 
 		// use title if textContent is truncated with "…" and title contains full version
 		return title?.startsWith(textContent.slice(0, -1)) ? title : textContent
