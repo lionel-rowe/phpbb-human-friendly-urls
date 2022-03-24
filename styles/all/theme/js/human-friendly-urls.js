@@ -8,11 +8,13 @@
 			.split(/[\p{P}\p{Z}]+/gu)
 			// remove non-letters and non-numbers
 			.map((x) => x.replace(/[^\p{L}\p{N}]+/gu, ''))
-			.join(' ')
+			// remove empty or whitespace-only
+			.filter((x) => x.trim())
+			.join('-')
 			// truncate excessively long slugs to keep URLs within reasonable length
 			.slice(0, 100)
-			.trim()
-			.replace(/ +/gu, '-')
+			// remove any trailing hyphen
+			.replace(/-$/, '')
 
 	const pathParams = new Map(
 		Object.entries({
@@ -110,7 +112,9 @@
 		const textContent = $cloned.textContent.trim()
 		const title = $cloned.title?.trim()
 
-		const text = title?.startsWith(textContent.slice(0, -1)) ? title : textContent
+		const text = title?.startsWith(textContent.slice(0, -1))
+			? title
+			: textContent
 
 		// hard-coded — phpBB never localizes this string;
 		// see e.g. /viewtopic.php line 2369

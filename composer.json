@@ -3,7 +3,7 @@
 	"type": "phpbb-extension",
 	"description": "Human-Friendly URLs",
 	"homepage": "https://github.com/lionel-rowe/phpbb-human-friendly-urls",
-	"version": "0.1.5-beta",
+	"version": "0.1.7-beta",
 	"time": "2022-03-09",
 	"license": "GPL-2.0-only",
 	"authors": [
