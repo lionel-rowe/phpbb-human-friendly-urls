@@ -30,6 +30,9 @@ class main_listener implements EventSubscriberInterface
 	/* @var \phpbb\language\language */
 	protected $language;
 
+	/* @var array */
+	protected $defaults;
+
 	/**
 	 * Constructor
 	 */
@@ -40,6 +43,11 @@ class main_listener implements EventSubscriberInterface
 		// use own instance rather than dependency injection
 		// to play nicely with alfredoramos\markdown
 		$this->link_helper = new link_helper();
+
+		$this->defaults = array_fill_keys(
+			['scheme', 'host', 'port', 'path', 'query', 'fragment'],
+			''
+		);
 	}
 
 	/**
@@ -59,22 +67,20 @@ class main_listener implements EventSubscriberInterface
 	 * render URL in a Unicode-aware way
 	 */
 	protected function unicodify_url(string $href) {
-		$url = parse_url($href);
+		$url = array_merge($this->defaults, parse_url($href));
 
 		$scheme = $url['scheme'];
-		$port = $url['port'];
-
 		$host = idn_to_utf8($url['host']);
-
+		$port = $url['port'];
 		$path = urldecode($url['path']);
-		$fragment = urldecode($url['fragment']);
 		$query = urldecode($url['query']);
+		$fragment = urldecode($url['fragment']);
 
 		return implode([
 			$scheme ? "$scheme://" : '',
-			$host,
+			$host ? $host : '',
 			$port ? ":$port" : '',
-			$path,
+			$path ? $path : '',
 			$query ? "?$query" : '',
 			$fragment ? "#$fragment" : '',
 		]);
@@ -135,7 +141,7 @@ class main_listener implements EventSubscriberInterface
 			[
 				$href,
 				$this->truncate_href($href),
-			],
+			]
 		);
 
 		$is_local_link_text = in_array(
@@ -143,7 +149,7 @@ class main_listener implements EventSubscriberInterface
 			[
 				$this->to_local($href),
 				$this->truncate_href($this->to_local($href)),
-			],
+			]
 		);
 
 		if ($is_external_link_text) {
@@ -164,25 +170,23 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function unicodify_urls(\phpbb\event\data $event)
 	{
-		$link_matcher = <<<REGEX
-			~
-			(<a			               # start_tag
+		$link_matcher = '/
+			(<a			                  # start_tag
 				[^>]*
 				(?:
-					href="([^>"]+)"    # href_quot
-					| href='([^>']+)'  # href_apos
+					href="([^>"]+)"       # href_quot
+					| href=\'([^>\']+)\'  # href_apos
 				)
 				[^>]*
 			>)
-			([\s\S]+?)                 # text_content
-			(</a>)                     # end_tag
-			~ix
-		REGEX;
+			([\s\S]+?)                    # text_content
+			(<\/a>)                        # end_tag
+		/ix';
 
 		$event['html'] = preg_replace_callback(
 			$link_matcher,
 			[$this, 'replace_link_content'],
-			$event['html'],
+			$event['html']
 		);
 	}
 }
