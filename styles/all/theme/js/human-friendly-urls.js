@@ -114,10 +114,10 @@
 
 		// hard-coded — phpBB never localizes this string;
 		// see e.g. /viewtopic.php line 2369
-		const re = 'Re: '
+		const rePrefix = 'Re: '
 
 		// use title if textContent is truncated with "…" and title contains full version
-		return text.startsWith(re) ? text.slice(re.length) : text
+		return text.startsWith(rePrefix) ? text.slice(rePrefix.length) : text
 	}
 
 	const getCurrentPageTitle = () => {
