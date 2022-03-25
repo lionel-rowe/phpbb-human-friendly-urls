@@ -6,6 +6,7 @@
 	 * 	humanFriendlyUrls: {
 	 * 		username: string,
 	 * 		userId: number,
+	 * 		pageStatus: number,
 	 * 		config: {
 	 * 			maxSlugLength: number,
 	 * 		},
@@ -163,6 +164,10 @@
 
 	/** @param {string | null} existingSlug */
 	const getCurrentPageTitle = (existingSlug) => {
+		if (data.pageStatus >= 400) {
+			return ''
+		}
+
 		const memberListHeading = document.querySelector('h2.memberlist-title')
 
 		if (memberListHeading) {

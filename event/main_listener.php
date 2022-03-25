@@ -86,6 +86,7 @@ class main_listener implements EventSubscriberInterface
 			// for some reason `username` is HTML-encoded by default
 			'username' => html_entity_decode($this->user->data['username']),
 			'userId' => intval($this->user->data['user_id']),
+			'pageStatus' => http_response_code(),
 			'config' => [
 				'maxSlugLength' => intval(
 					$this->config['luoning_humanfriendlyurls_max_slug_length']
