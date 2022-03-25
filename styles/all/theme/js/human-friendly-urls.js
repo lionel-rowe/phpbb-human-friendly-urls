@@ -4,25 +4,27 @@
 	 *
 	 * @type {{
 	 * 	humanFriendlyUrls: {
+	 * 		username: string,
+	 * 		userId: number,
 	 * 		config: {
-	 * 			maxSlugLength: number
-	 * 		}
-	 * 	}
+	 * 			maxSlugLength: number,
+	 * 		},
+	 * 		l10n: {
+	 * 			viewingProfile: string,
+	 * 		},
+	 * 	},
 	 * }}
 	 */
-	const {
-		humanFriendlyUrls: { config },
-	} = window
+	const { humanFriendlyUrls: data } = window
+	const { config, l10n } = data
 
 	/** @param {string} str */
 	const slugify = (str) => {
 		const segments = str
 			.normalize()
 			.toLowerCase()
-			// split on punctuation or separators (including spaces)
-			.split(/[\p{P}\p{Z}]+/gu)
-			// remove non-letters and non-numbers
-			.map((x) => x.replace(/[^\p{L}\p{N}]+/gu, ''))
+			// split on anything other than letters, marks, numbers
+			.split(/[^\p{L}\p{M}\p{N}]+/gu)
 			// remove empty or whitespace-only
 			.filter((x) => x.trim())
 
@@ -34,7 +36,7 @@
 		// massively better performance
 		segments.reverse()
 
-		let slug = segments.pop()
+		let slug = segments.pop() ?? ''
 
 		/** @type {string} */
 		let segment
@@ -159,17 +161,30 @@
 		return text.startsWith(rePrefix) ? text.slice(rePrefix.length) : text
 	}
 
-	const getCurrentPageTitle = () => {
-		/** @type {HTMLHeadingElement} */
-		let heading
+	/** @param {string | null} existingSlug */
+	const getCurrentPageTitle = (existingSlug) => {
+		const memberListHeading = document.querySelector('h2.memberlist-title')
 
-		if ((heading = document.querySelector('h2.memberlist-title'))) {
-			return heading.textContent.split('-').slice(1).join('-').trim()
-		} else if ((heading = document.querySelector('h2[class$="-title"]'))) {
+		if (memberListHeading) {
+			const text = memberListHeading.textContent
+
+			const segments = l10n.viewingProfile.split('%s')
+			const [before, after] = segments
+
+			return segments.length === 2 &&
+				text.startsWith(before) &&
+				text.endsWith(after)
+				? text.slice(before.length, -after.length || undefined)
+				: ''
+		}
+
+		const heading = document.querySelector('h2.forum-title, h2.topic-title')
+
+		if (heading) {
 			return heading.textContent.trim()
 		}
 
-		return document.title.split('-').slice(1).join('-').trim()
+		return existingSlug ?? ''
 	}
 
 	/**
@@ -207,6 +222,12 @@
 
 		if (cached) {
 			slug = cached
+		} else if (
+			path === 'memberlist' &&
+			param === 'u' &&
+			id === String(data.userId)
+		) {
+			slug = slugify(data.username)
 		} else {
 			let maybeId
 
@@ -305,14 +326,17 @@
 	const sluggableUrlData = getSluggableUrlData(window.location.href)
 
 	if (sluggableUrlData) {
-		const slug = slugify(getCurrentPageTitle())
-		const href = getHrefFromSlugData(window.location.href, {
-			...sluggableUrlData,
-			slug,
-		})
+		const slug = slugify(getCurrentPageTitle(sluggableUrlData.existingSlug))
 
-		if (href !== window.location.href) {
-			window.history.replaceState({}, document.title, href)
+		if (slug) {
+			const href = getHrefFromSlugData(window.location.href, {
+				...sluggableUrlData,
+				slug,
+			})
+
+			if (href !== window.location.href) {
+				window.history.replaceState({}, document.title, href)
+			}
 		}
 	}
 

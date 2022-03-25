@@ -5,6 +5,7 @@ services:
             - '@config'
             - '@language'
             - '@template'
+            - '@user'
         tags:
             - { name: event.listener }
     luoning.humanfriendlyurls.controller.acp:

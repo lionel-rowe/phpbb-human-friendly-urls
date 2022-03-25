@@ -34,33 +34,38 @@ class main_listener implements EventSubscriberInterface
 	protected $language;
 	/** @var \phpbb\template\template */
 	protected $template;
-	/* @var array */
-	protected $defaults;
+	/** @var \phpbb\user */
+	protected $user;
+
+	/* @var string[] */
+	protected $default_url_parts;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\language\language $language, \phpbb\template\template $template)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbb\language\language $language,
+		\phpbb\template\template $template,
+		\phpbb\user $user
+	)
 	{
 		$this->config = $config;
 		$this->language = $language;
 		$this->template = $template;
+		$this->user = $user;
 
 		// use own instance rather than dependency injection
 		// to play nicely with alfredoramos\markdown
 		$this->link_helper = new link_helper();
 
-		$this->defaults = array_fill_keys(
+		$this->default_url_parts = array_fill_keys(
 			['scheme', 'host', 'port', 'path', 'query', 'fragment'],
 			''
 		);
-	}
 
-	public function assign_template_vars()
-	{
-		$this->template->assign_vars([
-			'S_MAX_SLUG_LENGTH'	=> $this->config['luoning_humanfriendlyurls_max_slug_length'],
-		]);
+		// add necessary language items
+		$this->language->add_lang('memberlist');
 	}
 
 	/**
@@ -76,11 +81,35 @@ class main_listener implements EventSubscriberInterface
 		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
+	public function assign_template_vars()
+	{
+		$js_data = [
+			// for some reason `username` is HTML-encoded by default
+			'username' => html_entity_decode($this->user->data['username']),
+			'userId' => intval($this->user->data['user_id']),
+			'config' => [
+				'maxSlugLength' => intval($this->config['luoning_humanfriendlyurls_max_slug_length']),
+			],
+			'l10n' => [
+				'viewingProfile' => $this->language->lang('VIEWING_PROFILE'),
+			],
+		];
+
+		$this->template->assign_vars([
+			// `json_encode` escapes forward-slashes by default, so is safe for
+			// direct interpolation inside <script> tags
+			'S_SAFE_JS_DATA' => json_encode(
+				$js_data,
+				JSON_UNESCAPED_UNICODE
+			),
+		]);
+	}
+
 	/**
 	 * render URL in a Unicode-aware way
 	 */
 	protected function unicodify_url(string $href) {
-		$url = array_merge($this->defaults, parse_url($href));
+		$url = array_merge($this->default_url_parts, parse_url($href));
 
 		$scheme = $url['scheme'];
 		$host = idn_to_utf8($url['host']);
