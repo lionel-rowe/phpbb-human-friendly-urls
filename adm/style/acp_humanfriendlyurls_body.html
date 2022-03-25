@@ -1,0 +1,63 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('HUMANFRIENDLYURLS_TITLE') }}</h1>
+
+{% if S_ERROR %}
+<div class="errorbox">
+	<h3>{{ lang('WARNING') }}</h3>
+	<p>{{ ERROR_MSG }}</p>
+</div>
+{% endif %}
+
+<form
+	id="luoning_humanfriendlyurls_acp"
+	name="luoning_humanfriendlyurls_acp"
+	method="post"
+	action="{{ U_ACTION }}"
+>
+	<fieldset>
+		<legend>{{ lang('SETTINGS') }}</legend>
+
+		<dl>
+			<dt>
+				<label for="luoning_humanfriendlyurls_max_slug_length">
+					{{ lang('MAX_SLUG_LENGTH') }}</label
+				>
+				<br />
+				<span>{{ lang('DEFAULT') }}{{ lang('COLON') }} 100</span>
+				<br />
+				<span>-1 = {{ lang('DISABLE_LENGTH_LIMIT') }}</span>
+			</dt>
+			<dd>
+				<input
+					type="number"
+					id="luoning_humanfriendlyurls_max_slug_length"
+					name="luoning_humanfriendlyurls_max_slug_length"
+					value="{{ LUONING_HUMANFRIENDLYURLS_MAX_SLUG_LENGTH }}"
+					min="-1"
+					step="1"
+				/>
+			</dd>
+		</dl>
+	</fieldset>
+
+	<fieldset class="submit-buttons">
+		<input
+			class="button1"
+			type="submit"
+			id="submit"
+			name="submit"
+			value="{{ lang('SUBMIT') }}"
+		/>&nbsp;
+		<input
+			class="button2"
+			type="submit"
+			id="preview"
+			name="preview"
+			value="{{ lang('PREVIEW') }}"
+		/>
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+{% include 'overall_footer.html' %}

@@ -23,22 +23,28 @@ class main_listener implements EventSubscriberInterface
 	static public function getSubscribedEvents()
 	{
 		return [
-			'core.text_formatter_s9e_render_after' 		=> 'unicodify_urls',
+			'core.page_header' => 'assign_template_vars',
+			'core.text_formatter_s9e_render_after' => 'unicodify_urls',
 		];
 	}
 
+	/* @var \phpbb\config\config */
+	protected $config;
 	/* @var \phpbb\language\language */
 	protected $language;
-
+	/** @var \phpbb\template\template */
+	protected $template;
 	/* @var array */
 	protected $defaults;
 
 	/**
 	 * Constructor
 	 */
-	public function __construct(\phpbb\language\language $language)
+	public function __construct(\phpbb\config\config $config, \phpbb\language\language $language, \phpbb\template\template $template)
 	{
+		$this->config = $config;
 		$this->language = $language;
+		$this->template = $template;
 
 		// use own instance rather than dependency injection
 		// to play nicely with alfredoramos\markdown
@@ -48,6 +54,13 @@ class main_listener implements EventSubscriberInterface
 			['scheme', 'host', 'port', 'path', 'query', 'fragment'],
 			''
 		);
+	}
+
+	public function assign_template_vars()
+	{
+		$this->template->assign_vars([
+			'S_MAX_SLUG_LENGTH'	=> $this->config['luoning_humanfriendlyurls_max_slug_length'],
+		]);
 	}
 
 	/**

@@ -2,6 +2,17 @@ services:
     luoning.humanfriendlyurls.listener:
         class: luoning\humanfriendlyurls\event\main_listener
         arguments:
+            - '@config'
             - '@language'
+            - '@template'
         tags:
             - { name: event.listener }
+    luoning.humanfriendlyurls.controller.acp:
+        class: luoning\humanfriendlyurls\controller\acp_controller
+        arguments:
+            - '@config'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'

@@ -1,10 +1,9 @@
 <?php
-
 /**
  *
  * Human-Friendly URLs. An extension for the phpBB Forum Software package.
  *
- * @copyright (c) 2022, Lionel Rowe, https://github.com/lionel-rowe
+ * @copyright (c) 2022, Lionel Rowe
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
@@ -36,13 +35,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-	'HUMANFRIENDLYURLS_EVENT'		=> ' :: Humanfriendlyurls Event :: ',
-	'HUMANFRIENDLYURLS_TITLE'		=> 'Human-Friendly URLs',
+	'ACP_HUMANFRIENDLYURLS_TITLE'	=> 'Human-Friendly URLs',
+	'ACP_HUMANFRIENDLYURLS'			=> 'Settings',
 
-	'ACP_HUMANFRIENDLYURLS_SETTING_SAVED'	=> 'Settings have been saved successfully!',
-
-	'MAX_SLUG_LENGTH'	=> 'Maximum length for URL slugs',
-
-	'DISABLE_LENGTH_LIMIT' => 'Disable length limit',
-	'DEFAULT' => 'Default',
+	'LOG_ACP_HUMANFRIENDLYURLS_SETTINGS'		=> '<strong>Human-Friendly URLs settings updated</strong>',
 ]);

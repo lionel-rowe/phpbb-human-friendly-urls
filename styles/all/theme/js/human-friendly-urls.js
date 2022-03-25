@@ -1,7 +1,22 @@
 ;(() => {
+	/**
+	 * exposed on `window` by `overall_header_stylesheets_after.html`
+	 *
+	 * @type {{
+	 * 	humanFriendlyUrls: {
+	 * 		config: {
+	 * 			maxSlugLength: number
+	 * 		}
+	 * 	}
+	 * }}
+	 */
+	const {
+		humanFriendlyUrls: { config },
+	} = window
+
 	/** @param {string} str */
-	const slugify = (str) =>
-		str
+	const slugify = (str) => {
+		const segments = str
 			.normalize()
 			.toLowerCase()
 			// split on punctuation or separators (including spaces)
@@ -10,11 +25,31 @@
 			.map((x) => x.replace(/[^\p{L}\p{N}]+/gu, ''))
 			// remove empty or whitespace-only
 			.filter((x) => x.trim())
-			.join('-')
-			// truncate excessively long slugs to keep URLs within reasonable length
-			.slice(0, 100)
-			// remove any trailing hyphen
-			.replace(/-$/, '')
+
+		if (config.maxSlugLength === -1) {
+			return segments.join('-')
+		}
+
+		// reversing allows us to use `pop` instead of `shift`, which gives
+		// massively better performance
+		segments.reverse()
+
+		let slug = segments.pop()
+
+		/** @type {string} */
+		let segment
+
+		while ((segment = segments.pop())) {
+			// use LT rather than LTE to account for the joining '-' char
+			if (slug.length + segment.length < config.maxSlugLength) {
+				slug += '-' + segment
+			} else {
+				break
+			}
+		}
+
+		return slug
+	}
 
 	const pathParams = new Map(
 		Object.entries({
