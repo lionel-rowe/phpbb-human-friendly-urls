@@ -18,13 +18,13 @@ class main_info
 	public function module()
 	{
 		return [
-			'filename'	=> '\luoning\humanfriendlyurls\acp\main_module',
-			'title'		=> 'ACP_HUMANFRIENDLYURLS_TITLE',
-			'modes'		=> [
-				'settings'	=> [
-					'title'	=> 'ACP_HUMANFRIENDLYURLS',
-					'auth'	=> 'ext_luoning/humanfriendlyurls && acl_a_board',
-					'cat'	=> ['ACP_HUMANFRIENDLYURLS_TITLE'],
+			'filename' => '\luoning\humanfriendlyurls\acp\main_module',
+			'title' => 'ACP_HUMANFRIENDLYURLS_TITLE',
+			'modes' => [
+				'settings' => [
+					'title' => 'ACP_HUMANFRIENDLYURLS',
+					'auth' => 'ext_luoning/humanfriendlyurls && acl_a_board',
+					'cat' => ['ACP_HUMANFRIENDLYURLS_TITLE'],
 				],
 			],
 		];

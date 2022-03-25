@@ -31,7 +31,9 @@ class main_module
 		global $phpbb_container;
 
 		/** @var \luoning\humanfriendlyurls\controller\acp_controller $acp_controller */
-		$acp_controller = $phpbb_container->get('luoning.humanfriendlyurls.controller.acp');
+		$acp_controller = $phpbb_container->get(
+			'luoning.humanfriendlyurls.controller.acp'
+		);
 
 		/** @var \phpbb\language\language $language */
 		$language = $phpbb_container->get('language');

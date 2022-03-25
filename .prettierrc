@@ -14,5 +14,9 @@
 	"useTabs": true,
 	"trailingComma": "all",
 	"vueIndentScriptAndStyle": false,
-	"printWidth": 80
+	"printWidth": 80,
+
+	"phpVersion": "7.1",
+	"trailingCommaPHP": true,
+	"braceStyle": "psr-2"
 }

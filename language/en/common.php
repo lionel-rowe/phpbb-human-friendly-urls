@@ -11,7 +11,7 @@
 
 if (!defined('IN_PHPBB'))
 {
-	exit;
+	exit();
 }
 
 if (empty($lang) || !is_array($lang))
@@ -36,12 +36,13 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-	'HUMANFRIENDLYURLS_EVENT'		=> ' :: Humanfriendlyurls Event :: ',
-	'HUMANFRIENDLYURLS_TITLE'		=> 'Human-Friendly URLs',
+	'HUMANFRIENDLYURLS_EVENT' => ' :: Humanfriendlyurls Event :: ',
+	'HUMANFRIENDLYURLS_TITLE' => 'Human-Friendly URLs',
 
-	'ACP_HUMANFRIENDLYURLS_SETTING_SAVED'	=> 'Settings have been saved successfully!',
+	'ACP_HUMANFRIENDLYURLS_SETTING_SAVED' =>
+		'Settings have been saved successfully!',
 
-	'MAX_SLUG_LENGTH'	=> 'Maximum length for URL slugs',
+	'MAX_SLUG_LENGTH' => 'Maximum length for URL slugs',
 
 	'DISABLE_LENGTH_LIMIT' => 'Disable length limit',
 	'DEFAULT' => 'Default',

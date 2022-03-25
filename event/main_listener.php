@@ -7,7 +7,6 @@
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
-
 namespace luoning\humanfriendlyurls\event;
 
 /**
@@ -20,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class main_listener implements EventSubscriberInterface
 {
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return [
 			'core.page_header' => 'assign_template_vars',
@@ -88,7 +87,9 @@ class main_listener implements EventSubscriberInterface
 			'username' => html_entity_decode($this->user->data['username']),
 			'userId' => intval($this->user->data['user_id']),
 			'config' => [
-				'maxSlugLength' => intval($this->config['luoning_humanfriendlyurls_max_slug_length']),
+				'maxSlugLength' => intval(
+					$this->config['luoning_humanfriendlyurls_max_slug_length']
+				),
 			],
 			'l10n' => [
 				'viewingProfile' => $this->language->lang('VIEWING_PROFILE'),
@@ -98,17 +99,15 @@ class main_listener implements EventSubscriberInterface
 		$this->template->assign_vars([
 			// `json_encode` escapes forward-slashes by default, so is safe for
 			// direct interpolation inside <script> tags
-			'S_SAFE_JS_DATA' => json_encode(
-				$js_data,
-				JSON_UNESCAPED_UNICODE
-			),
+			'S_SAFE_JS_DATA' => json_encode($js_data, JSON_UNESCAPED_UNICODE),
 		]);
 	}
 
 	/**
 	 * render URL in a Unicode-aware way
 	 */
-	protected function unicodify_url(string $href) {
+	protected function unicodify_url(string $href)
+	{
 		$url = array_merge($this->default_url_parts, parse_url($href));
 
 		$scheme = $url['scheme'];
@@ -178,30 +177,29 @@ class main_listener implements EventSubscriberInterface
 
 		$href = strlen($href_quot) > 0 ? $href_quot : $href_apos;
 
-		$is_external_link_text = in_array(
-			$text_content,
-			[
-				$href,
-				$this->truncate_href($href),
-			]
-		);
+		$is_external_link_text = in_array($text_content, [
+			$href,
+			$this->truncate_href($href),
+		]);
 
-		$is_local_link_text = in_array(
-			$text_content,
-			[
-				$this->to_local($href),
-				$this->truncate_href($this->to_local($href)),
-			]
-		);
+		$is_local_link_text = in_array($text_content, [
+			$this->to_local($href),
+			$this->truncate_href($this->to_local($href)),
+		]);
 
-		if ($is_external_link_text) {
-			return $start_tag
-				. $this->truncate_href($this->unicodify_url($href))
-				. $end_tag;
-		} else if ($is_local_link_text) {
-			return $start_tag
-				. $this->truncate_href($this->unicodify_url($this->to_local($href)))
-				. $end_tag;
+		if ($is_external_link_text)
+		{
+			return $start_tag .
+				$this->truncate_href($this->unicodify_url($href)) .
+				$end_tag;
+		}
+		else if ($is_local_link_text)
+		{
+			return $start_tag .
+				$this->truncate_href(
+					$this->unicodify_url($this->to_local($href))
+				) .
+				$end_tag;
 		}
 
 		return $full_link_html;

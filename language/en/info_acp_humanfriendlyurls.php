@@ -10,7 +10,7 @@
 
 if (!defined('IN_PHPBB'))
 {
-	exit;
+	exit();
 }
 
 if (empty($lang) || !is_array($lang))
@@ -35,8 +35,9 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-	'ACP_HUMANFRIENDLYURLS_TITLE'	=> 'Human-Friendly URLs',
-	'ACP_HUMANFRIENDLYURLS'			=> 'Settings',
+	'ACP_HUMANFRIENDLYURLS_TITLE' => 'Human-Friendly URLs',
+	'ACP_HUMANFRIENDLYURLS' => 'Settings',
 
-	'LOG_ACP_HUMANFRIENDLYURLS_SETTINGS'		=> '<strong>Human-Friendly URLs settings updated</strong>',
+	'LOG_ACP_HUMANFRIENDLYURLS_SETTINGS' =>
+		'<strong>Human-Friendly URLs settings updated</strong>',
 ]);

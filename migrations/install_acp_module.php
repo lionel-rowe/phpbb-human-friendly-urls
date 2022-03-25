@@ -14,7 +14,9 @@ class install_acp_module extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['luoning_humanfriendlyurls_max_slug_length']);
+		return isset(
+			$this->config['luoning_humanfriendlyurls_max_slug_length']
+		);
 	}
 
 	public static function depends_on()
@@ -27,19 +29,22 @@ class install_acp_module extends \phpbb\db\migration\migration
 		return [
 			['config.add', ['luoning_humanfriendlyurls_max_slug_length', 100]],
 
-			['module.add', [
-				'acp',
-				'ACP_CAT_DOT_MODS',
-				'ACP_HUMANFRIENDLYURLS_TITLE'
-			]],
-			['module.add', [
-				'acp',
-				'ACP_HUMANFRIENDLYURLS_TITLE',
+			[
+				'module.add',
+				['acp', 'ACP_CAT_DOT_MODS', 'ACP_HUMANFRIENDLYURLS_TITLE'],
+			],
+			[
+				'module.add',
 				[
-					'module_basename'	=> '\luoning\humanfriendlyurls\acp\main_module',
-					'modes'				=> ['settings'],
+					'acp',
+					'ACP_HUMANFRIENDLYURLS_TITLE',
+					[
+						'module_basename' =>
+							'\luoning\humanfriendlyurls\acp\main_module',
+						'modes' => ['settings'],
+					],
 				],
-			]],
+			],
 		];
 	}
 }

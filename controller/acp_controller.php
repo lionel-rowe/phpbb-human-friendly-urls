@@ -46,14 +46,21 @@ class acp_controller
 	 * @param \phpbb\template\template	$template	Template object
 	 * @param \phpbb\user				$user		User object
 	 */
-	public function __construct(\phpbb\config\config $config, \phpbb\language\language $language, \phpbb\log\log $log, \phpbb\request\request $request, \phpbb\template\template $template, \phpbb\user $user)
+	public function __construct(
+		\phpbb\config\config $config,
+		\phpbb\language\language $language,
+		\phpbb\log\log $log,
+		\phpbb\request\request $request,
+		\phpbb\template\template $template,
+		\phpbb\user $user
+	)
 	{
-		$this->config	= $config;
-		$this->language	= $language;
-		$this->log		= $log;
-		$this->request	= $request;
-		$this->template	= $template;
-		$this->user		= $user;
+		$this->config = $config;
+		$this->language = $language;
+		$this->log = $log;
+		$this->request = $request;
+		$this->template = $template;
+		$this->user = $user;
 	}
 
 	/**
@@ -85,14 +92,29 @@ class acp_controller
 			if (empty($errors))
 			{
 				// Set the options the user configured
-				$this->config->set('luoning_humanfriendlyurls_max_slug_length', $this->request->variable('luoning_humanfriendlyurls_max_slug_length', 0));
+				$this->config->set(
+					'luoning_humanfriendlyurls_max_slug_length',
+					$this->request->variable(
+						'luoning_humanfriendlyurls_max_slug_length',
+						0
+					)
+				);
 
 				// Add option settings change action to the admin log
-				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ACP_HUMANFRIENDLYURLS_SETTINGS');
+				$this->log->add(
+					'admin',
+					$this->user->data['user_id'],
+					$this->user->ip,
+					'LOG_ACP_HUMANFRIENDLYURLS_SETTINGS'
+				);
 
 				// Option settings have been updated and logged
 				// Confirm this to the user and provide link back to previous page
-				trigger_error($this->language->lang('ACP_HUMANFRIENDLYURLS_SETTING_SAVED') . adm_back_link($this->u_action));
+				trigger_error(
+					$this->language->lang(
+						'ACP_HUMANFRIENDLYURLS_SETTING_SAVED'
+					) . adm_back_link($this->u_action)
+				);
 			}
 		}
 
@@ -100,12 +122,13 @@ class acp_controller
 
 		// Set output variables for display in the template
 		$this->template->assign_vars([
-			'S_ERROR'		=> $s_errors,
-			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
+			'S_ERROR' => $s_errors,
+			'ERROR_MSG' => $s_errors ? implode('<br />', $errors) : '',
 
-			'U_ACTION'		=> $this->u_action,
+			'U_ACTION' => $this->u_action,
 
-			'LUONING_HUMANFRIENDLYURLS_MAX_SLUG_LENGTH'	=> $this->config['luoning_humanfriendlyurls_max_slug_length'],
+			'LUONING_HUMANFRIENDLYURLS_MAX_SLUG_LENGTH' =>
+				$this->config['luoning_humanfriendlyurls_max_slug_length'],
 		]);
 	}
 
