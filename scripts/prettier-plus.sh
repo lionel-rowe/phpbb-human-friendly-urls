@@ -10,5 +10,5 @@ PHP_FILES_MATCHER="$PARENT_DIR/**/*.php"
 
 for file in $PHP_FILES_MATCHER
 do
-	node scripts/post-prettier.js "$file"
+	node scripts/after-prettier.js "$file"
 done

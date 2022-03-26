@@ -80,6 +80,9 @@ class main_listener implements EventSubscriberInterface
 		$event['lang_set_ext'] = $lang_set_ext;
 	}
 
+	/**
+	 * assign template variables for access via JS
+	 */
 	public function assign_template_vars()
 	{
 		$js_data = [
@@ -163,6 +166,52 @@ class main_listener implements EventSubscriberInterface
 	}
 
 	/**
+	 * normalize URLs for accurate comparison of e.g. () vs %28%29
+	 *
+	 * necessary for e.g. Wikipedia URLs such as
+	 * https://es.wikipedia.org/wiki/Contrase%C3%B1a_(%C3%A1lbum)
+	 * => https://es.wikipedia.org/wiki/Contraseña_(álbum)
+	 */
+	protected function normalize_url(string $href)
+	{
+		$chars_to_normalize = str_split('()[]');
+		$matcher = implode('|', array_map('urlencode', $chars_to_normalize));
+
+		return preg_replace_callback(
+			"/$matcher/",
+			function ($match_arr) {
+				return urldecode($match_arr[0]);
+			},
+			$href
+		);
+	}
+
+	/**
+	 * checks if href is the same as text content
+	 * optionally with additional formatters to check different variations
+	 */
+	protected function is_same_url(string $raw_href, string $raw_text_content)
+	{
+		$identity = function (string $str) {
+			return $str;
+		};
+
+		return function (
+			?callable $fmt_href = null,
+			?callable $fmt_text_content = null
+		) use ($raw_href, $raw_text_content, $identity) {
+			$fmt_href = $fmt_href ?? $identity;
+			$fmt_text_content = $fmt_text_content ?? $identity;
+
+			$text_content = $fmt_text_content($raw_text_content);
+			$href = $fmt_href($raw_href);
+
+			return $text_content === $href ||
+				$text_content === $this->truncate_href($href);
+		};
+	}
+
+	/**
 	 * replace link content with unicode-friendly version
 	 */
 	protected function replace_link_content(array $link_html_match_arr)
@@ -172,33 +221,47 @@ class main_listener implements EventSubscriberInterface
 			$start_tag,
 			$href_quot,
 			$href_apos,
-			$text_content,
+			$inner_html,
 			$end_tag,
 		] = $link_html_match_arr;
 
-		$href = strlen($href_quot) > 0 ? $href_quot : $href_apos;
+		$raw_href = html_entity_decode(
+			!empty($href_quot) ? $href_quot : $href_apos
+		);
 
-		$is_external_link_text = in_array($text_content, [
-			$href,
-			$this->truncate_href($href),
-		]);
+		$raw_text_content = html_entity_decode($inner_html);
 
-		$is_local_link_text = in_array($text_content, [
-			$this->to_local($href),
-			$this->truncate_href($this->to_local($href)),
-		]);
+		$is_same_url = $this->is_same_url($raw_href, $raw_text_content);
+
+		$is_external_link_text =
+			$is_same_url() ||
+			$is_same_url([$this, 'normalize_url'], [$this, 'normalize_url']);
 
 		if ($is_external_link_text)
 		{
 			return $start_tag .
-				$this->truncate_href($this->unicodify_url($href)) .
+				htmlspecialchars(
+					$this->truncate_href($this->unicodify_url($raw_href))
+				) .
 				$end_tag;
 		}
-		else if ($is_local_link_text)
+
+		$is_local_link_text =
+			$is_same_url([$this, 'to_local']) ||
+			$is_same_url(
+				function ($str) {
+					return $this->normalize_url($this->to_local($str));
+				},
+				[$this, 'normalize_url']
+			);
+
+		if ($is_local_link_text)
 		{
 			return $start_tag .
-				$this->truncate_href(
-					$this->unicodify_url($this->to_local($href))
+				htmlspecialchars(
+					$this->truncate_href(
+						$this->unicodify_url($this->to_local($raw_href))
+					)
 				) .
 				$end_tag;
 		}
@@ -220,8 +283,8 @@ class main_listener implements EventSubscriberInterface
 				)
 				[^>]*
 			>)
-			([\s\S]+?)                    # text_content
-			(<\/a>)                        # end_tag
+			([^<]+?)                      # inner_html
+			(<\/a>)                       # end_tag
 		/ix';
 
 		$event['html'] = preg_replace_callback(
