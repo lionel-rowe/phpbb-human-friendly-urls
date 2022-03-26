@@ -2,13 +2,13 @@
 
 shopt -s globstar
 
-PARENT_DIR="${BASH_SOURCE%/*}/.."
+CURRENT_DIR="${BASH_SOURCE%/*}"
+PARENT_DIR="$CURRENT_DIR/.."
+FILES_MATCHER="$PARENT_DIR/**/*.*"
 
-prettier -w $PARENT_DIR
-
-PHP_FILES_MATCHER="$PARENT_DIR/**/*.php"
-
-for file in $PHP_FILES_MATCHER
+for file in $FILES_MATCHER
 do
-	node scripts/after-prettier.js "$file"
+	$CURRENT_DIR/enhanced-prettier.js "$file" &
 done
+
+wait
