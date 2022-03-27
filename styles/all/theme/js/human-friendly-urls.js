@@ -328,21 +328,27 @@
 
 	const selector = 'a[href]'
 
+	const url = new URL(window.location.href)
+
 	const sluggableUrlData = getSluggableUrlData(window.location.href)
 
 	if (sluggableUrlData) {
 		const slug = slugify(getCurrentPageTitle(sluggableUrlData.existingSlug))
 
 		if (slug) {
-			const href = getHrefFromSlugData(window.location.href, {
+			url.href = getHrefFromSlugData(window.location.href, {
 				...sluggableUrlData,
 				slug,
 			})
-
-			if (href !== window.location.href) {
-				window.history.replaceState({}, document.title, href)
-			}
 		}
+	}
+
+	// phpBB session ID - only ever used on page load, and should not be part
+	// of sharable urls
+	url.searchParams.delete('sid')
+
+	if (window.location.href !== url.href) {
+		window.history.replaceState(null, '', url.href)
 	}
 
 	document.querySelectorAll(selector).forEach(renderSlugForLink)
