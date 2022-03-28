@@ -6,6 +6,7 @@ services:
             - '@language'
             - '@template'
             - '@user'
+            - '@luoning.humanfriendlyurls.core.unicode_links'
         tags:
             - { name: event.listener }
     luoning.humanfriendlyurls.controller.acp:
@@ -17,3 +18,5 @@ services:
             - '@request'
             - '@template'
             - '@user'
+    luoning.humanfriendlyurls.core.unicode_links:
+        class: luoning\humanfriendlyurls\core\unicode_links
