@@ -102,6 +102,10 @@ class main_listener implements EventSubscriberInterface
 	 */
 	public function unicodify_links(\phpbb\event\data $event)
 	{
+		if (!$this->config['luoning_humanfriendlyurls_unicodify_links']) {
+			return;
+		}
+
 		$event['html'] = $this->unicode_links->render_links_for_post(
 			$event['html']
 		);

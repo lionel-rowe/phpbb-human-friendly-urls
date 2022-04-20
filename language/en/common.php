@@ -43,6 +43,8 @@ $lang = array_merge($lang, [
 		'Settings have been saved successfully!',
 
 	'MAX_SLUG_LENGTH' => 'Maximum length for URL slugs',
+	'UNICODIFY_LINKS' => 'Intelligently render Unicode link text in posts',
+	'UNICODIFY_LINKS_DESC' => 'For example: "ma%C3%B1ana" → "mañana"',
 
 	'DISABLE_LENGTH_LIMIT' => 'Disable length limit',
 	'DEFAULT' => 'Default',

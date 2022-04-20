@@ -96,7 +96,14 @@ class acp_controller
 					'luoning_humanfriendlyurls_max_slug_length',
 					$this->request->variable(
 						'luoning_humanfriendlyurls_max_slug_length',
-						0
+						100
+					)
+				);
+				$this->config->set(
+					'luoning_humanfriendlyurls_unicodify_links',
+					$this->request->variable(
+						'luoning_humanfriendlyurls_unicodify_links',
+						1
 					)
 				);
 
@@ -129,6 +136,8 @@ class acp_controller
 
 			'LUONING_HUMANFRIENDLYURLS_MAX_SLUG_LENGTH' =>
 				$this->config['luoning_humanfriendlyurls_max_slug_length'],
+			'LUONING_HUMANFRIENDLYURLS_UNICODIFY_LINKS' =>
+				$this->config['luoning_humanfriendlyurls_unicodify_links'],
 		]);
 	}
 

@@ -39,6 +39,36 @@
 				/>
 			</dd>
 		</dl>
+
+		<dl>
+			<dt>
+				<label for="luoning_humanfriendlyurls_unicodify_links">
+					{{lang('UNICODIFY_LINKS')}}
+				</label>
+				<br />
+				<span>{{ lang('UNICODIFY_LINKS_DESC')}}</span>
+				<br />
+				<span>{{ lang('DEFAULT') }}{{ lang('COLON') }} {{lang('YES')}}</span>
+			</dt>
+			<dd>
+				<label>
+					<input type="radio" class="radio" name="luoning_humanfriendlyurls_unicodify_links" value="1"
+						{% if LUONING_HUMANFRIENDLYURLS_UNICODIFY_LINKS %}
+							id="luoning_humanfriendlyurls_unicodify_links" checked="checked"
+						{% endif %}
+					/>
+					{{lang('YES')}}
+				</label>
+				<label>
+					<input type="radio" class="radio" name="luoning_humanfriendlyurls_unicodify_links" value="0"
+						{% if not LUONING_HUMANFRIENDLYURLS_UNICODIFY_LINKS %}
+							id="luoning_humanfriendlyurls_unicodify_links" checked="checked"
+						{% endif %}
+					/>
+					{{lang('NO')}}
+				</label>
+			</dd>
+		</dl>
 	</fieldset>
 
 	<fieldset class="submit-buttons">

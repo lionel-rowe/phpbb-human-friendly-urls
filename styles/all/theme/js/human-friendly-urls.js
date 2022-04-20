@@ -291,7 +291,7 @@
 		if (slugData) {
 			const { slug, existingSlug } = slugData
 
-			if (link.closest('.content')) {
+			if (link.closest('.content, .post-buttons, .skiplink, #quick-links')) {
 				if (existingSlug) {
 					slugCacheSet(slugData, existingSlug)
 				}
