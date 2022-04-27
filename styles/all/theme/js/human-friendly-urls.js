@@ -171,7 +171,7 @@
 		const memberListHeading = document.querySelector('h2.memberlist-title')
 
 		if (memberListHeading) {
-			const text = memberListHeading.textContent
+			const text = memberListHeading.firstChild.textContent
 
 			const segments = l10n.viewingProfile.split('%s')
 			const [before, after] = segments
@@ -186,7 +186,7 @@
 		const heading = document.querySelector('h2.forum-title, h2.topic-title')
 
 		if (heading) {
-			return heading.textContent.trim()
+			return heading.firstChild.textContent.trim()
 		}
 
 		return existingSlug ?? ''
