@@ -93,7 +93,7 @@ class main_listener implements EventSubscriberInterface
 		$this->template->assign_vars([
 			// `json_encode` escapes forward-slashes by default, so is safe for
 			// direct interpolation inside <script> tags
-			'S_SAFE_JS_DATA' => json_encode($js_data, JSON_UNESCAPED_UNICODE),
+			'S_HUMANFRIENDLYURLS_SAFE_JS_DATA' => json_encode($js_data, JSON_UNESCAPED_UNICODE),
 		]);
 	}
 

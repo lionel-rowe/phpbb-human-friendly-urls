@@ -1,4 +1,4 @@
-;(() => {
+; (() => {
 	/**
 	 * exposed on `window` by `overall_header_stylesheets_after.html`
 	 *
@@ -24,8 +24,8 @@
 		const segments = str
 			.normalize()
 			.toLowerCase()
-			// split on anything other than letters, marks, numbers
-			.split(/[^\p{L}\p{M}\p{N}]+/gu)
+			// split on anything other than letters and numbers
+			.split(/[^\p{L}\p{N}]+/gu)
 			// remove empty or whitespace-only
 			.filter((x) => x.trim())
 
@@ -134,32 +134,38 @@
 
 	/** @param {HTMLAnchorElement} link */
 	const getLinkTitle = (link) => {
+		/** @type {string} */
+		let text
+
 		// if .notification-block, grab .notification-reference
 		// (.notification-block also contains other text)
 		if (link.matches('.notification-block')) {
-			return link
+			text = link
 				.querySelector('.notification-reference')
 				?.textContent.trim()
+		} else {
+			const $cloned = link.cloneNode(true)
+
+			// visually hidden elements not canonical for link title generation
+			$cloned.querySelectorAll('.sr-only').forEach(($el) => $el.remove())
+
+			const textContent = $cloned.textContent.trim()
+			/** @type {string | null} */
+			const title = $cloned.title?.trim()
+
+			// use title if textContent is truncated with "…" and title contains full version
+			text = title?.startsWith(textContent.slice(0, -1))
+				? title
+				: textContent
 		}
-
-		const $cloned = link.cloneNode(true)
-
-		// visually hidden elements not canonical for link title generation
-		$cloned.querySelectorAll('.sr-only').forEach(($el) => $el.remove())
-
-		const textContent = $cloned.textContent.trim()
-		const title = $cloned.title?.trim()
-
-		const text = title?.startsWith(textContent.slice(0, -1))
-			? title
-			: textContent
 
 		// hard-coded — phpBB never localizes this string;
 		// see e.g. /viewtopic.php line 2369
 		const rePrefix = 'Re: '
+		const reRe = new RegExp(String.raw`^[\p{P}\p{Z}]*${rePrefix}`, 'u')
+		const reMatch = text.match(reRe)?.[0]
 
-		// use title if textContent is truncated with "…" and title contains full version
-		return text.startsWith(rePrefix) ? text.slice(rePrefix.length) : text
+		return reMatch ? text.slice(reMatch.length) : text
 	}
 
 	/** @param {string | null} existingSlug */
